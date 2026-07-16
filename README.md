@@ -1,39 +1,39 @@
 # srta — SpeedrunTool Additions
 
-Mod [Everest](https://everestapi.github.io/) **compagnon** de [SpeedrunTool](https://gamebanana.com/mods/53712) pour Celeste : il s'accroche au mod officiel (déclaré en dépendance) au lieu d'en être une fork, et lui ajoute des fonctionnalités orientées practice/speedrun.
+[Everest](https://everestapi.github.io/) mod, **companion** to [SpeedrunTool](https://gamebanana.com/mods/53712) for Celeste: it hooks into the official mod (declared as a dependency) instead of being a fork of it, and adds practice/speedrun-oriented features.
 
-Options et hotkeys dans **Mod Options → SpeedrunTool Additions** (hotkeys non assignées par défaut).
+Options and hotkeys under **Mod Options → SpeedrunTool Additions** (hotkeys unbound by default).
 
 ## Installation
 
-1. Installer [Everest](https://everestapi.github.io/) et [SpeedrunTool](https://gamebanana.com/mods/53712) (v3.27.16+), par exemple via Olympus.
-2. Télécharger/compiler srta (voir [Build](#build)) et copier le dossier `srta` (contenant `srta.dll`, `everest.yaml`, `Dialog/`) dans `<Celeste>/Mods/`.
-3. Vérifier que `SpeedrunTool.zip` n'est **pas** dans `Mods/blacklist.txt` — c'est une dépendance.
+1. Install [Everest](https://everestapi.github.io/) and [SpeedrunTool](https://gamebanana.com/mods/53712) (v3.27.16+), e.g. via Olympus.
+2. Download/build srta (see [Build](#build)) and copy the `srta` folder (containing `srta.dll`, `everest.yaml`, `Dialog/`) into `<Celeste>/Mods/`.
+3. Make sure `SpeedrunTool.zip` is **not** in `Mods/blacklist.txt` — it's a dependency.
 
 ## Build
 
 ```
-dotnet build -p:CelestePrefix=<dossier Celeste>
+dotnet build -p:CelestePrefix=<Celeste folder>
 ```
 
-`CelestePrefix` est auto-détecté si le repo est cloné dans `<Celeste>/Mods/xxx/`. La DLL de SpeedrunTool est extraite automatiquement du `SpeedrunTool.zip` installé, et [Krafs.Publicizer](https://github.com/krafs/Publicizer) donne accès à ses internals. La cible `OutputAsModStructure` génère `build/`, prêt à copier dans `<Celeste>/Mods/srta/`.
+`CelestePrefix` is auto-detected if the repo is cloned into `<Celeste>/Mods/xxx/`. SpeedrunTool's DLL is automatically extracted from the installed `SpeedrunTool.zip`, and [Krafs.Publicizer](https://github.com/krafs/Publicizer) gives access to its internals. The `OutputAsModStructure` target generates `build/`, ready to copy into `<Celeste>/Mods/srta/`.
 
 ## Changelog
 
 ### v1.0.0 — 2026-07-16
 
-- **Hotkey « Toggle Room Timer Visibility »** : masque/affiche le room timer à la volée — le timer continue de tourner en arrière-plan. Option `Show Room Timer` persistée dans les settings.
-- **Option « Only Show Timer When Run Completed »** : le room timer ne s'affiche qu'une fois le run terminé.
-- **Hotkey « Undo Latest Room Timer PB »** : restaure les PB tels qu'ils étaient au début de la tentative courante. Distinct de `Clear Room Timer PB` de SpeedrunTool qui efface tout.
+- **"Toggle Room Timer Visibility" hotkey**: hides/shows the room timer on the fly — the timer keeps running in the background. `Show Room Timer` option persisted in the settings.
+- **"Only Show Timer When Run Completed" option**: the room timer only shows once the run is completed.
+- **"Undo Latest Room Timer PB" hotkey**: restores the PBs to what they were at the start of the current attempt. Distinct from SpeedrunTool's `Clear Room Timer PB`, which clears everything.
 
-*(reprend la « phase 1 » développée initialement dans la fork `srt_additions`, désormais remplacée par cet addon)*
+*(resumes the "phase 1" initially developed in the `srt_additions` fork, now replaced by this addon)*
 
-## Limites connues
+## Known limitations
 
-- Épinglé sur SpeedrunTool **v3.27.16** : l'addon touche des internals (`lastPbTimes`, `Data_Auto`…) qui peuvent changer à une mise à jour de SpeedrunTool — rebuild + retest à chaque release upstream.
-- Si SpeedrunTool est rechargé à chaud *après* srta, ses hooks repassent devant les nôtres et le masquage du timer cesse d'agir jusqu'au rechargement de srta.
-- L'undo PB ne fonctionne pas dans le debug map.
+- Pinned to SpeedrunTool **v3.27.16**: the addon touches internals (`lastPbTimes`, `Data_Auto`…) that may change on a SpeedrunTool update — rebuild + retest on every upstream release.
+- If SpeedrunTool is hot-reloaded *after* srta, its hooks end up in front of ours again and timer hiding stops working until srta is reloaded.
+- PB undo doesn't work in the debug map.
 
 ## Architecture
 
-Voir [CLAUDE.md](CLAUDE.md) (architecture, conventions, checklist nouvelle feature) et [PLAN.md](PLAN.md) (feuille de route).
+See [CLAUDE.md](CLAUDE.md) (architecture, conventions, new-feature checklist) and [PLAN.md](PLAN.md) (roadmap).
