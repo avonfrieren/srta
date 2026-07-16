@@ -1,0 +1,14 @@
+# srta — ajouts par-dessus SpeedrunTool
+
+# Mod Options (menu auto-généré)
+MODOPTIONS_SRTA_TITLE=                          SpeedrunTool Additions
+MODOPTIONS_SRTA_SHOWROOMTIMER=                  Afficher le room timer
+MODOPTIONS_SRTA_ONLYSHOWROOMTIMERWHENCOMPLETED= Timer visible seulement quand le run est fini
+MODOPTIONS_SRTA_TOGGLEROOMTIMERVISIBILITY=      Afficher/Masquer le room timer
+MODOPTIONS_SRTA_UNDOROOMTIMERPB=                Annuler le dernier PB du room timer
+
+# Popups
+SRTA_UNDO_ROOM_TIMER_PB_TOOLTIP=                PB précédent du room timer restauré
+SRTA_UNDO_ROOM_TIMER_PB_DIALOG=
+    [MADELINE left normal]
+    PB précédent du room timer restauré~

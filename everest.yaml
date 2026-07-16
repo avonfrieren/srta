@@ -1,0 +1,8 @@
+- Name: srta
+  Version: 1.0.0
+  DLL: srta.dll
+  Dependencies:
+    - Name: Everest
+      Version: 1.6397
+    - Name: SpeedrunTool
+      Version: 3.27.16
