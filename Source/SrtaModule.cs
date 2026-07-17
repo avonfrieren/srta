@@ -14,9 +14,11 @@ public class SrtaModule : EverestModule {
 
     public override void Load() {
         RoomTimerTweaks.Load();
+        RoomDeltas.Load();
     }
 
     public override void Unload() {
+        RoomDeltas.Unload();
         RoomTimerTweaks.Unload();
     }
 }
