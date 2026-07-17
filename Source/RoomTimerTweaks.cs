@@ -11,7 +11,7 @@ internal static class RoomTimerTweaks {
     private static SrtaSettings Settings => SrtaModule.Settings;
     private static SpeedrunToolSettings SrtSettings => SpeedrunToolSettings.Instance;
 
-    private static bool HideRoomTimer =>
+    internal static bool HideRoomTimer =>
         !Settings.ShowRoomTimer ||
         (Settings.OnlyShowRoomTimerWhenCompleted && !RoomTimerManager.Data_Auto.IsCompleted);
 
