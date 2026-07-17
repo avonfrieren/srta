@@ -1,12 +1,12 @@
 # srta — SpeedrunTool Additions
 
-[Everest](https://everestapi.github.io/) mod, **companion** to [SpeedrunTool](https://gamebanana.com/mods/53712) for Celeste: it hooks into the official mod (declared as a dependency) instead of being a fork of it, and adds practice/speedrun-oriented features.
+[Everest](https://everestapi.github.io/) mod, **companion** to [SpeedrunTool](https://gamebanana.com/tools/6597) for Celeste: it hooks into the official mod (declared as a dependency) instead of being a fork of it, and adds practice/speedrun-oriented features.
 
 Options and hotkeys under **Mod Options → SpeedrunTool Additions** (hotkeys unbound by default).
 
 ## Installation
 
-1. Install [Everest](https://everestapi.github.io/) and [SpeedrunTool](https://gamebanana.com/mods/53712) (v3.27.16+), e.g. via Olympus.
+1. Install [Everest](https://everestapi.github.io/) and [SpeedrunTool](https://gamebanana.com/tools/6597) (v3.27.16+), e.g. via Olympus.
 2. Download/build srta (see [Build](#build)) and copy the `srta` folder (containing `srta.dll`, `everest.yaml`, `Dialog/`) into `<Celeste>/Mods/`.
 3. Make sure `SpeedrunTool.zip` is **not** in `Mods/blacklist.txt` — it's a dependency.
 
