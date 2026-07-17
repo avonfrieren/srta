@@ -27,13 +27,13 @@ internal static class RoomDeltas {
     private static int lastRoomNumber;
     private static string lastTimeKeyPrefix = "";
     private static RoomTimerType lastTimerType = RoomTimerType.Off;
+    private static int deltaRoom; // room the delta row refers to (< 1 = none yet)
     private static string deltaText = "";
     private static bool deltaIsAhead;
 
-    // settings mirrors, deliberately NOT registered with save states: settings are not
-    // rolled back on load, so these trackers must not be either
+    // settings mirror, deliberately NOT registered with save states: settings are not
+    // rolled back on load, so this tracker must not be either
     private static int lastNumberOfRooms;
-    private static DeltaMode lastDeltaMode;
 
     private static object saveLoadAction;
 
@@ -52,7 +52,7 @@ internal static class RoomDeltas {
 
         typeof(SaveLoadImports).ModInterop();
         saveLoadAction = SaveLoadImports.RegisterStaticTypes?.Invoke(typeof(RoomDeltas),
-            [nameof(lastRoomNumber), nameof(lastTimeKeyPrefix), nameof(lastTimerType), nameof(deltaText), nameof(deltaIsAhead)]);
+            [nameof(lastRoomNumber), nameof(lastTimeKeyPrefix), nameof(lastTimerType), nameof(deltaRoom), nameof(deltaText), nameof(deltaIsAhead)]);
     }
 
     public static void Unload() {
@@ -70,11 +70,20 @@ internal static class RoomDeltas {
         // is outermost) ⇒ after orig the timer data of this frame is final
         orig(self);
 
-        if (!self.Paused && Settings.ToggleRoomDeltas.Pressed) {
-            Settings.ShowRoomDeltas = !Settings.ShowRoomDeltas;
-            SrtaModule.Instance.SaveSettings();
-            string state = Dialog.Clean(Settings.ShowRoomDeltas ? DialogIds.On : DialogIds.Off);
-            PopupMessageUtils.ShowOptionState(Dialog.Clean("MODOPTIONS_SRTA_SHOWROOMDELTAS"), state);
+        if (!self.Paused) {
+            if (Settings.ToggleRoomDeltas.Pressed) {
+                Settings.ShowRoomDeltas = !Settings.ShowRoomDeltas;
+                SrtaModule.Instance.SaveSettings();
+                string state = Dialog.Clean(Settings.ShowRoomDeltas ? DialogIds.On : DialogIds.Off);
+                PopupMessageUtils.ShowOptionState(Dialog.Clean("MODOPTIONS_SRTA_SHOWROOMDELTAS"), state);
+            }
+
+            if (Settings.SwitchRoomDeltasMode.Pressed) {
+                Settings.RoomDeltasMode = (DeltaMode)(((int)Settings.RoomDeltasMode + 1) % Enum.GetNames(typeof(DeltaMode)).Length);
+                SrtaModule.Instance.SaveSettings();
+                PopupMessageUtils.ShowOptionState(Dialog.Clean("MODOPTIONS_SRTA_ROOMDELTASMODE"),
+                    Dialog.Clean("MODOPTIONS_SRTA_ROOMDELTASMODE_" + Settings.RoomDeltasMode.ToString().ToUpper()));
+            }
         }
 
         UpdateDelta();
@@ -92,40 +101,39 @@ internal static class RoomDeltas {
         int roomNumber = data.roomNumber;
         string prefix = data.TimeKeyPrefix;
 
-        // timer type switch = Data_Auto may point to the other instance; prefix change = other
-        // map or fresh attempt; roomNumber going back = timer reset or save state load;
-        // timed-room count or comparison mode change = the displayed delta no longer means
-        // anything, show none until the next room
-        bool resync = SrtSettings.RoomTimerType != lastTimerType
-                      || prefix != lastTimeKeyPrefix
-                      || roomNumber < lastRoomNumber
-                      || SrtSettings.NumberOfRooms != lastNumberOfRooms
-                      || Settings.RoomDeltasMode != lastDeltaMode;
+        // roomNumber moving forward = SpeedrunTool just recorded a split, which belongs to
+        // the previous room number; timer type switch = Data_Auto may point to the other
+        // instance; prefix change = other map or fresh attempt; roomNumber going back =
+        // timer reset — in every case re-anchor on the last split this instance recorded
+        // (after a reset ThisRunTimes is empty, so the row stays hidden until the next split)
+        if (SrtSettings.RoomTimerType != lastTimerType
+            || prefix != lastTimeKeyPrefix
+            || roomNumber != lastRoomNumber) {
+            deltaRoom = roomNumber - 1;
+        }
         lastTimerType = SrtSettings.RoomTimerType;
         lastTimeKeyPrefix = prefix;
-        lastNumberOfRooms = SrtSettings.NumberOfRooms;
-        lastDeltaMode = Settings.RoomDeltasMode;
-
-        if (resync) {
-            lastRoomNumber = roomNumber;
-            deltaText = "";
-            return;
-        }
-
-        if (roomNumber == lastRoomNumber) {
-            return;
-        }
         lastRoomNumber = roomNumber;
 
-        if (!SrtSettings.Enabled || SrtSettings.RoomTimerType == RoomTimerType.Off) {
-            deltaText = "";
+        // scrolling the timed-room count re-targets the row to the selected room, mirroring
+        // how SpeedrunTool re-points its own display at PbTimes[prefix + NumberOfRooms]
+        if (SrtSettings.NumberOfRooms != lastNumberOfRooms) {
+            if (lastNumberOfRooms != 0) {
+                deltaRoom = SrtSettings.NumberOfRooms;
+            }
+            lastNumberOfRooms = SrtSettings.NumberOfRooms;
+        }
+
+        // recomputed every frame so the row reacts instantly to count scrolling and mode
+        // switches: shown iff both this run and the PB have a time for deltaRoom
+        deltaText = "";
+        if (deltaRoom < 1 || !SrtSettings.Enabled || SrtSettings.RoomTimerType == RoomTimerType.Off) {
             return;
         }
 
-        // the split SpeedrunTool just recorded belongs to the previous room number;
-        // compare against the PB split as it was when the attempt started (like its own
-        // end-of-run comparison), since PbTimes may already contain this run's time
-        string key = prefix + (roomNumber - 1);
+        // compare against the PB split as it was when the attempt started (like SpeedrunTool's
+        // own end-of-run comparison), since PbTimes may already contain this run's time
+        string key = prefix + deltaRoom;
         if (data.ThisRunTimes.TryGetValue(key, out long split) &&
             data.lastPbTimes.TryGetValue(key, out long pbSplit) && pbSplit > 0) {
             long time = split;
@@ -133,16 +141,12 @@ internal static class RoomDeltas {
             if (Settings.RoomDeltasMode == DeltaMode.Room) {
                 // segment times: subtract the previous room's split on both sides
                 // (missing key = first timed room = 0, like SpeedrunTool's prevRoomTime)
-                string prevKey = prefix + (roomNumber - 2);
+                string prevKey = prefix + (deltaRoom - 1);
                 time -= data.ThisRunTimes.GetValueOrDefault(prevKey, 0);
                 pb -= data.lastPbTimes.GetValueOrDefault(prevKey, 0);
             }
             deltaText = RoomTimerManager.ComparePb(time, pb);
             deltaIsAhead = time <= pb;
-        }
-        else {
-            // nothing to compare against yet (first attempt through this room)
-            deltaText = "";
         }
     }
 
@@ -153,12 +157,7 @@ internal static class RoomDeltas {
             return;
         }
 
-        if (SrtSettings is not { Enabled: true } || SrtSettings.RoomTimerType == RoomTimerType.Off) {
-            return;
-        }
-
-        // once completed SpeedrunTool draws its own comparison next to the final time
-        if (RoomTimerManager.Data_Auto.IsCompleted || self.DrawLerp <= 0f) {
+        if (SrtSettings is not { Enabled: true } || SrtSettings.RoomTimerType == RoomTimerType.Off || self.DrawLerp <= 0f) {
             return;
         }
 

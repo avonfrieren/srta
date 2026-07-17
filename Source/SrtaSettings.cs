@@ -25,4 +25,7 @@ public class SrtaSettings : EverestModuleSettings {
 
     [DefaultButtonBinding(0, Keys.None)]
     public ButtonBinding ToggleRoomDeltas { get; set; }
+
+    [DefaultButtonBinding(0, Keys.None)]
+    public ButtonBinding SwitchRoomDeltasMode { get; set; }
 }

@@ -22,9 +22,10 @@ dotnet build -p:CelestePrefix=<Celeste folder>
 
 ### v1.1.0 — 2026-07-17
 
-- **Per-room deltas**: on every room change, shows the gap (±X) between this run's split and the PB split, on a third row under SpeedrunTool's room timer — green when ahead, red when behind. Compared against the PBs as they were when the attempt started, like SpeedrunTool's own end-of-run comparison. Hidden once the run is completed (SpeedrunTool then shows its comparison next to the final time) and while the room timer is hidden. `Show Room Deltas` option persisted in the settings.
-- **"Room Deltas Comparison" option**: compare against the **PB split** (total time since timer start) or the **PB room** (this room's time vs the same room in the PB). Changing the comparison mode or SpeedrunTool's timed-room count clears the displayed delta until the next room (no valid comparison in between).
+- **Per-room deltas**: on every room change, shows the gap (±X) between this run's split and the PB split, on a third row under SpeedrunTool's room timer — green when ahead, red when behind. Compared against the PBs as they were when the attempt started, like SpeedrunTool's own end-of-run comparison. Changing SpeedrunTool's timed-room count re-targets the row to the selected room, like SpeedrunTool's own display: the delta shows whenever both the current run and the PB have data for that room, and hides otherwise. Hidden while the room timer is hidden. `Show Room Deltas` option persisted in the settings.
+- **"Room Deltas Comparison" option**: compare against the **PB split** (total time since timer start) or the **PB room** (this room's time vs the same room in the PB). The displayed delta updates instantly when the mode changes.
 - **"Toggle Room Deltas" hotkey**: shows/hides the deltas on the fly.
+- **"Switch Room Deltas Comparison" hotkey**: cycles the comparison mode (PB split / PB room) with a popup, like SpeedrunTool's `Room Timer` hotkey.
 
 ### v1.0.0 — 2026-07-16
 
