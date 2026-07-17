@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Celeste.Mod.SpeedrunTool;
 using Celeste.Mod.SpeedrunTool.Message;
 using Celeste.Mod.SpeedrunTool.RoomTimer;
@@ -28,6 +29,11 @@ internal static class RoomDeltas {
     private static RoomTimerType lastTimerType = RoomTimerType.Off;
     private static string deltaText = "";
     private static bool deltaIsAhead;
+
+    // settings mirrors, deliberately NOT registered with save states: settings are not
+    // rolled back on load, so these trackers must not be either
+    private static int lastNumberOfRooms;
+    private static DeltaMode lastDeltaMode;
 
     private static object saveLoadAction;
 
@@ -87,12 +93,18 @@ internal static class RoomDeltas {
         string prefix = data.TimeKeyPrefix;
 
         // timer type switch = Data_Auto may point to the other instance; prefix change = other
-        // map or fresh attempt; roomNumber going back = timer reset or save state load
+        // map or fresh attempt; roomNumber going back = timer reset or save state load;
+        // timed-room count or comparison mode change = the displayed delta no longer means
+        // anything, show none until the next room
         bool resync = SrtSettings.RoomTimerType != lastTimerType
                       || prefix != lastTimeKeyPrefix
-                      || roomNumber < lastRoomNumber;
+                      || roomNumber < lastRoomNumber
+                      || SrtSettings.NumberOfRooms != lastNumberOfRooms
+                      || Settings.RoomDeltasMode != lastDeltaMode;
         lastTimerType = SrtSettings.RoomTimerType;
         lastTimeKeyPrefix = prefix;
+        lastNumberOfRooms = SrtSettings.NumberOfRooms;
+        lastDeltaMode = Settings.RoomDeltasMode;
 
         if (resync) {
             lastRoomNumber = roomNumber;
@@ -116,8 +128,17 @@ internal static class RoomDeltas {
         string key = prefix + (roomNumber - 1);
         if (data.ThisRunTimes.TryGetValue(key, out long split) &&
             data.lastPbTimes.TryGetValue(key, out long pbSplit) && pbSplit > 0) {
-            deltaText = RoomTimerManager.ComparePb(split, pbSplit);
-            deltaIsAhead = split <= pbSplit;
+            long time = split;
+            long pb = pbSplit;
+            if (Settings.RoomDeltasMode == DeltaMode.Room) {
+                // segment times: subtract the previous room's split on both sides
+                // (missing key = first timed room = 0, like SpeedrunTool's prevRoomTime)
+                string prevKey = prefix + (roomNumber - 2);
+                time -= data.ThisRunTimes.GetValueOrDefault(prevKey, 0);
+                pb -= data.lastPbTimes.GetValueOrDefault(prevKey, 0);
+            }
+            deltaText = RoomTimerManager.ComparePb(time, pb);
+            deltaIsAhead = time <= pb;
         }
         else {
             // nothing to compare against yet (first attempt through this room)

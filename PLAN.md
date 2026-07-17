@@ -12,8 +12,9 @@ Voir `CLAUDE.md` pour l'architecture et la checklist « nouvelle fonctionnalité
 
 ## Phase 2 — Deltas — ✅ faite (v1.1.0)
 
-4. ~~**Delta ±X par room**~~ — afficher l'écart réel au PB à chaque passage de room, pas seulement le timer doré. Fait par polling de `RoomTimerData.roomNumber` après `orig` dans `On.Celeste.Level.Update` (plutôt qu'un hook de transition : couvre aussi drapeaux/cœur/cassette) + HUD dessiné par srta sous le timer de SpeedrunTool.
+4. ~~**Delta ±X par room**~~ — afficher l'écart réel au PB à chaque passage de room, pas seulement le timer doré. Fait par polling de `RoomTimerData.roomNumber` après `orig` dans `On.Celeste.Level.Update` (plutôt qu'un hook de transition : couvre aussi drapeaux/cœur/cassette) + HUD dessiné par srta sous le timer de SpeedrunTool. Deux modes interchangeables dans les paramètres : vs **split du PB** (temps total) ou vs **room du PB** (temps de segment, différence des splits `lastPbTimes`).
 5. ~~**Hotkey toggle des deltas**~~ — trivial une fois le point 4 en place.
+   - *Plus tard (pas maintenant)* : **comparaison WR / TAS** — nécessite des données externes : autorisation d'import à obtenir + définir le mécanisme d'import. Prévoir alors un réglage « cible de comparaison » (PB/WR/TAS) distinct du mode split/room.
 
 ## Phase 3 — Gestion des PB
 
