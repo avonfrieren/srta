@@ -10,10 +10,10 @@ Voir `CLAUDE.md` pour l'architecture et la checklist « nouvelle fonctionnalité
 2. ~~**Option « timer visible seulement quand le run est fini »**~~ — s'appuie sur `RoomTimerData.IsCompleted`.
 3. ~~**Hotkey « annuler le dernier PB »**~~ — restaurer la valeur précédente via `lastPbTimes`. Distinct de `ResetRoomTimerPb` qui efface tout.
 
-## Phase 2 — Deltas
+## Phase 2 — Deltas — ✅ faite (v1.1.0)
 
-4. **Delta ±X par room** — afficher l'écart réel au PB à chaque passage de room, pas seulement le timer doré. Données déjà disponibles (`PbTimes`, `BestSegments`) ; le travail est le calcul au changement de room + rendu/formatage. En addon : détection de changement de room par hooks `Level` propres + HUD dessiné par srta (pas besoin de toucher au rendu de SpeedrunTool).
-5. **Hotkey toggle des deltas** — trivial une fois le point 4 en place.
+4. ~~**Delta ±X par room**~~ — afficher l'écart réel au PB à chaque passage de room, pas seulement le timer doré. Fait par polling de `RoomTimerData.roomNumber` après `orig` dans `On.Celeste.Level.Update` (plutôt qu'un hook de transition : couvre aussi drapeaux/cœur/cassette) + HUD dessiné par srta sous le timer de SpeedrunTool.
+5. ~~**Hotkey toggle des deltas**~~ — trivial une fois le point 4 en place.
 
 ## Phase 3 — Gestion des PB
 

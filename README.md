@@ -20,6 +20,11 @@ dotnet build -p:CelestePrefix=<Celeste folder>
 
 ## Changelog
 
+### v1.1.0 — 2026-07-17
+
+- **Per-room deltas**: on every room change, shows the gap (±X) between this run's split and the PB split, on a third row under SpeedrunTool's room timer — green when ahead, red when behind. Compared against the PBs as they were when the attempt started, like SpeedrunTool's own end-of-run comparison. Hidden once the run is completed (SpeedrunTool then shows its comparison next to the final time) and while the room timer is hidden. `Show Room Deltas` option persisted in the settings.
+- **"Toggle Room Deltas" hotkey**: shows/hides the deltas on the fly.
+
 ### v1.0.0 — 2026-07-16
 
 - **"Toggle Room Timer Visibility" hotkey**: hides/shows the room timer on the fly — the timer keeps running in the background. `Show Room Timer` option persisted in the settings.

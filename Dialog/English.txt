@@ -4,8 +4,10 @@
 MODOPTIONS_SRTA_TITLE=                          SpeedrunTool Additions
 MODOPTIONS_SRTA_SHOWROOMTIMER=                  Show Room Timer
 MODOPTIONS_SRTA_ONLYSHOWROOMTIMERWHENCOMPLETED= Only Show Timer When Run Completed
+MODOPTIONS_SRTA_SHOWROOMDELTAS=                 Show Room Deltas
 MODOPTIONS_SRTA_TOGGLEROOMTIMERVISIBILITY=      Toggle Room Timer Visibility
 MODOPTIONS_SRTA_UNDOROOMTIMERPB=                Undo Latest Room Timer PB
+MODOPTIONS_SRTA_TOGGLEROOMDELTAS=               Toggle Room Deltas
 
 # Popups
 SRTA_UNDO_ROOM_TIMER_PB_TOOLTIP=                Restored the previous Room Timer PB
