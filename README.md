@@ -1,6 +1,6 @@
 # Speedrun Tool Additions (srta)
 
-[Everest](https://everestapi.github.io/) mod that **require**[Speedrun Tool](https://gamebanana.com/mods/53712) for Celeste. Adds features such as delta between split/room time, hidding the timer, cancel a pb and more.
+[Everest](https://everestapi.github.io/) mod that **require** [Speedrun Tool](https://gamebanana.com/mods/53712) for Celeste. Adds features such as delta between split/room time, hidding the timer, cancel a pb and more.
 
 Options and hotkeys under **Mod Options → SpeedrunTool Additions** (hotkeys unbound by default).
 
