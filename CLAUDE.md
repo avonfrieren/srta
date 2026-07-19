@@ -7,7 +7,7 @@ Roadmap dans `PLAN.md`. Le `README.md` sert de **changelog + instructions d'inst
 
 - .NET 8 (`net8.0`), projet unique `srta.csproj`. Sur cette machine : `~/.dotnet/dotnet build -p:CelestePrefix="$HOME/.steam/steam/steamapps/common/Celeste"`.
 - Références jeu (`Celeste.dll`, `FNA.dll`, `MMHOOK_Celeste.dll`, `MonoMod.*`) résolues via `CelestePrefix` (auto-détecté si le repo est cloné dans `<Celeste>/Mods/xxx/`).
-- **`SpeedrunTool.dll` est extraite automatiquement du `SpeedrunTool.zip` officiel installé** (`<Celeste>/Mods/SpeedrunTool.zip`) par la cible `ExtractSpeedrunToolDll` → l'addon compile toujours contre la version réellement installée. Épinglé sur **v3.27.16** dans `everest.yaml`.
+- **`SpeedrunTool.dll` est extraite automatiquement du `SpeedrunTool.zip` officiel installé** (`<Celeste>/Mods/SpeedrunTool.zip`) par la cible `ExtractSpeedrunToolDll` → l'addon compile toujours contre la version réellement installée. Épinglé sur **v3.27.17** dans `everest.yaml`.
 - `Krafs.Publicizer` publicise `SpeedrunTool` → accès compile-time aux internals (`RoomTimerManager.Data_Auto`, `RoomTimerData.lastPbTimes`…). Toute mise à jour upstream peut casser ces accès : rebuild + retest à chaque release.
 - Cible `OutputAsModStructure` : génère `build/` (DLL + PDB + `everest.yaml` + `Dialog/`) → copier dans `<Celeste>/Mods/srta/`.
 - ⚠️ `Mods/blacklist.txt` : `SpeedrunTool.zip` doit rester **actif** (c'est la dépendance), contrairement à l'époque de la fork où il était blacklisté.
